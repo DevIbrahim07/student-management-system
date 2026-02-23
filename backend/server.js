@@ -17,10 +17,11 @@ connectDB();
 const app = express();
 
 // middleware
-
+app.use(cors());
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
 );
@@ -48,6 +49,12 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`server is running on port ${PORT}`);
-});
+// Only run locally
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`server is running on port ${PORT}`);
+  });
+}
+
+// Export for Vercel
+module.exports = app;
